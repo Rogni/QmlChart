@@ -14,10 +14,19 @@ Item {
     property color color: "lightgray"
     property int gridWidth: 2
     property double tickInterval: 1
+    property ChartView chartView: parent
 
     function styledValue(value) {
         return Math.round(value*100)/100
     }
+
+    Component.onCompleted: repeater.update()
+    onAxisChanged: repeater.update()
+    Connections {
+        target: root.axis
+        onRangeChanged: repeater.update()
+    }
+
 
     onTickIntervalChanged: {
         // if tick interval equals 0 then in Repeater model expected zero division error
@@ -32,6 +41,7 @@ Item {
     z: parent.z - 1
 
     Repeater {
+        id: repeater
         Rectangle {
             anchors {
                 // used x axis
@@ -43,8 +53,8 @@ Item {
             }
             color: root.color
             property var value: Math.round(root.axis.min) + index*root.tickInterval
-                                + root.parent.width*0 + root.parent.height*0 // bind to ChartView width and height changed
-            property point position: root.parent.mapToPosition(Qt.point(value , value))
+                                + root.chartView.width*0 + root.chartView.height*0 // bind to ChartView width and height changed
+            property point position: root.chartView.mapToPosition(Qt.point(value , value))
 
             // ignored if used y axis
             width: root.gridWidth
@@ -64,8 +74,9 @@ Item {
                 text: root.styledValue(value)
             }
         }
-
-        model: (root.axis.max - root.axis.min)/root.tickInterval + 1
+        function update() {
+            model = (root.axis.max - root.axis.min)/root.tickInterval + 1
+        }
     }
 
 }
