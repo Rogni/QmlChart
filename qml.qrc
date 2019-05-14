@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/">
+        <file>main.qml</file>
+        <file>ScrollAndZoomMouseArea.qml</file>
+        <file>ChartGrid.qml</file>
+    </qresource>
+</RCC>
